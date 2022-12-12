@@ -27,7 +27,11 @@ class TransFlag: PKDetailView {
     }
     
     override func didTapHandler() {
-        set(image: Bundle(for: Self.self).image(forResource: showingAmogus ? "pride" : "amogus"))
+        if (showingAmogus) {
+            set(image: Bundle(for: Self.self).image(forResource: showingAmogus ? "pride" : "amogus"))
+        } else {
+            set(image: NSImage(byReferencing: URL(string: "https://media.tenor.com/jUMex_rdqPwAAAAS/among-us-twerk.gif")!))
+        }
         showingAmogus = !showingAmogus
     }
 }
