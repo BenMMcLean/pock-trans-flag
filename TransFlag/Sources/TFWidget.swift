@@ -10,18 +10,49 @@ import Foundation
 import AppKit
 import PockKit
 
-class TFWidget: PKWidget {
+internal extension NSNotification.Name {
+    static let didChangeWidgetPreferences = NSNotification.Name("didChangeWidgetPreferences")
+    static let didChangeWidgetLayout = NSNotification.Name("didChangeWidgetLayout")
+}
+
+class TransFlag: PKDetailView {
     
-    static var identifier: String = "lgbt.mclean.TransFlag"
-    var customizationLabel: String = "TransFlag"
-    var view: NSView!
+    private var showingAmogus = false
     
-    required init() {
-        self.view = PKButton(title: "TransFlag", target: self, action: #selector(printMessage))
+    override func didLoad() {
+        canScrollTitle = true
+        canScrollSubtitle = true
+        set(image: Bundle(for: Self.self).image(forResource: "pride"))
+        super.didLoad()
     }
     
-    @objc private func printMessage() {
-        NSLog("[TFWidget]: Hello, World!")
+    override func didTapHandler() {
+        set(image: Bundle(for: Self.self).image(forResource: showingAmogus ? "pride" : "amogus"))
+        showingAmogus = !showingAmogus
+    }
+}
+
+public class TFWidget: PKWidget {
+    public static var identifier: String = "TransFlag"
+    public var customizationLabel: String = "Trans Flag"
+    public var view: NSView!
+
+    required public init() {
+        self.view = TransFlag(leftToRight: false)
+        NotificationCenter.default.addObserver(self, selector: #selector(update), name: .didChangeWidgetLayout, object: nil)
     }
     
+    deinit {
+        view = nil
+    }
+    
+    @objc private func update() {
+        view.updateConstraints()
+        view.layoutSubtreeIfNeeded()
+    }
+    
+    @objc private func printDescription() {
+        
+    }
+        
 }
